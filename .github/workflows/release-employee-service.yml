@@ -14,7 +14,7 @@ on:
         required: false
         default: 'false'
       tags:
-        description: 'Release manually'
+        description: 'Description'
 jobs:
   # JOB to run change detection
   changes:
