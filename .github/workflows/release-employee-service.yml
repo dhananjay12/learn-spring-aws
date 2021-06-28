@@ -37,8 +37,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11.0.x
-      - run: mvn clean install
+      - run: mvn -pl employee-service clean install
 
       - name: Build Images using JIB
-        run: mvn -pl eureka-server,service-one,service-two,reactive-service,websocket-service,gateway  -Dmaven.test.skip=true package jib:build -Djib.to.auth.username=${{ secrets.DOCKERHUB_USERNAME }} -Djib.to.auth.password=${{ secrets.DOCKERHUB_PASSWORD }}
+        run: mvn -pl employee-service  -Dmaven.test.skip=true package jib:build -Djib.to.auth.username=${{ secrets.DOCKERHUB_USERNAME }} -Djib.to.auth.password=${{ secrets.DOCKERHUB_PASSWORD }}
 
