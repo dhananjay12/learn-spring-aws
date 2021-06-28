@@ -6,6 +6,7 @@ import com.mynotes.spring.aws.employee.exceptions.EntityNotFoundException;
 import com.mynotes.spring.aws.employee.exceptions.ValidationException;
 import com.mynotes.spring.aws.employee.persistence.EmployeeEntity;
 import com.mynotes.spring.aws.employee.persistence.EmployeeRepository;
+import com.mynotes.spring.aws.employee.service.EmployeeService;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/employee")
 public class EmployeeController {
 
-    @Autowired
-    EmployeeRepository employeeRepository;
+    EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService){
+        this.employeeService = employeeService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> find(@PathVariable int id) {
-        Optional<EmployeeEntity> result = employeeRepository.findById(id);
+        Optional<EmployeeEntity> result = employeeService.find(id);
         if (result.isPresent()) {
             return ResponseEntity.ok(EmployeeMapper.makeDTO(result.get()));
         }
@@ -37,44 +41,29 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public EmployeeDTO createCar(@Valid @RequestBody EmployeeDTO employeeDTO) {
+    public EmployeeDTO create(@Valid @RequestBody EmployeeDTO employeeDTO) {
         if(employeeDTO.getId()!=null){
             throw new ValidationException("Id should not be passed for creation");
         }
         EmployeeEntity employeeEntity = EmployeeMapper.makeEntity(employeeDTO);
-        EmployeeEntity result = employeeRepository.save(employeeEntity);
+        EmployeeEntity result = employeeService.create(employeeEntity);
         return EmployeeMapper.makeDTO(result);
     }
 
     @PutMapping("/{id}")
-    public EmployeeDTO updateCar(
+    public EmployeeDTO update(
         @PathVariable int id, @Valid @RequestBody EmployeeDTO employeeDTO) throws EntityNotFoundException {
         if(employeeDTO.getId()!=null && !employeeDTO.getId().equals(id)){
             throw new ValidationException("Id in path and body does not match");
         }
-        EmployeeEntity employeeEntity = findEmployeeById(id);
-        employeeEntity.setFname(employeeDTO.getFname());
-        employeeEntity.setLname(employeeDTO.getLname());
-        employeeEntity.setEmail(employeeDTO.getEmail());
-        EmployeeEntity result = employeeRepository.save(employeeEntity);
+        EmployeeEntity result = employeeService.update(id, employeeDTO);
         return EmployeeMapper.makeDTO(result);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable int id) {
-        Optional<EmployeeEntity> result = employeeRepository.findById(id);
-        if (result.isPresent()) {
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.notFound().build();
-    }
-
-
-    private EmployeeEntity findEmployeeById(Integer id) throws EntityNotFoundException {
-        return employeeRepository
-            .findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Could not find entity with id: " + id));
+    public ResponseEntity<?> delete(@PathVariable int id) throws EntityNotFoundException {
+        employeeService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
