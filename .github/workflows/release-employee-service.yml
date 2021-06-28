@@ -7,7 +7,14 @@ on:
   push:
     branches:
       - main
-
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Release'
+        required: false
+        default: 'false'
+      tags:
+        description: 'Release manually'
 jobs:
   # JOB to run change detection
   changes:
@@ -27,7 +34,7 @@ jobs:
   # JOB to release frontend
   release:
     needs: changes
-    if: ${{ needs.changes.outputs.backend == 'true' }}
+    if: ${{ needs.changes.outputs.backend == 'true' || github.event.inputs.release == 'true'}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
