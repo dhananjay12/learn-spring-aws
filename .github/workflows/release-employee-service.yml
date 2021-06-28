@@ -44,8 +44,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11.0.x
-      - run: mvn -pl employee-service clean install
+      - run: mvn -f employee-service/pom.xml clean install
 
       - name: Build Images using JIB
-        run: mvn -pl employee-service  -Dmaven.test.skip=true package jib:build -Djib.to.auth.username=${{ secrets.DOCKERHUB_USERNAME }} -Djib.to.auth.password=${{ secrets.DOCKERHUB_PASSWORD }}
+        run: mvn -f employee-service/pom.xml  -Dmaven.test.skip=true package jib:build -Djib.to.auth.username=${{ secrets.DOCKERHUB_USERNAME }} -Djib.to.auth.password=${{ secrets.DOCKERHUB_PASSWORD }}
 
