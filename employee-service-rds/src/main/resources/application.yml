@@ -21,9 +21,10 @@ cloud:
   aws:
     region:
       auto: false
-      static: eu-west-1
+      static: eu-central-1
     stack:
       auto: false
+
 
 logging:
   level:

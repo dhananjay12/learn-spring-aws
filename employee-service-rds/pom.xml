@@ -10,9 +10,9 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.mynotes.spring.aws</groupId>
-  <artifactId>employee-service</artifactId>
+  <artifactId>employee-service-rds</artifactId>
   <version>0.0.1</version>
-  <name>employee-service</name>
+  <name>employee-service-rds</name>
   <description>Demo project for Spring Boot</description>
 
   <properties>
