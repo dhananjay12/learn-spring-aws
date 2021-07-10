@@ -2,14 +2,15 @@ spring:
   application:
     name: employee-service
   profiles:
-    active: local
+    active: mysql
   liquibase:
     change-log: classpath:db-changelog.xml
+    enabled: true
   jpa:
     show_sql: true
     generate-ddl: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: none #create-drop #none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       properties:
@@ -33,30 +34,33 @@ logging:
         util:
           EC2MetadataUtils: ERROR
 ---
-spring:
-  profiles: local
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: admin
-    password: admin
-  jpa:
-    database: h2
-    database-platform: org.hibernate.dialect.H2Dialect
-  h2:
-    console:
-      enabled: true
-
----
 
 spring:
-  profiles: mariadb
   datasource:
-    url: jdbc:mariadb://localhost:3306/dating?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
-    username: backend
-    password: password
-    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mysql://<your-aws->.rds.amazonaws.com:3306/employees?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
+#    username: <username>
+#    password: <password>
+    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQLInnoDBDialect
-    database: mariadb
+    database: mysql
     openInView: false
+  config:
+    activate:
+      on-profile: mysql
+
+cloud:
+  aws:
+#    credentials:
+#      profile-name:
+    rds:
+      instances:
+        - databaseName: employees
+          db-instance-identifier: spring-database
+          password: password
+          username: admin
+    region:
+      auto: true
+      static: eu-west-1
+    stack:
+      auto: false
