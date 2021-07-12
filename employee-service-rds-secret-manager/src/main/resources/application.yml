@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: employee-service
+  profiles:
+    active: mysql
+  liquibase:
+    change-log: classpath:db-changelog.xml
+    enabled: true
+  jpa:
+    show_sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none #create-drop #none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      properties:
+        hibernate.cache.use_query_cache: false
+        hibernate.generate_statistics: true
+
+---
+
+spring:
+  datasource:
+    url: jdbc-secretsmanager:mysql://<instance>.rds.amazonaws.com:3306/employees?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
+    username: <secret-name>
+    driver-class-name: com.amazonaws.secretsmanager.sql.AWSSecretsManagerMySQLDriver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLInnoDBDialect
+    database: mysql
+    openInView: false
+  config:
+    activate:
+      on-profile: mysql

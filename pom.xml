@@ -30,6 +30,7 @@
 
     <modules>
         <module>employee-service-rds</module>
+        <module>employee-service-rds-secret-manager</module>
         <module>storage-service-s3</module>
     </modules>
 </project>
